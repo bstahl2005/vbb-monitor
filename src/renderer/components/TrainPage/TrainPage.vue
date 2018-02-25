@@ -45,8 +45,9 @@
                                         ICON
                                     </div>
                                     <div id="platform" class="text">
-                                        <!-- TODO replace with track and check with bus stop attr -->
-                                        <div class="value">Gleis {{  }}</div>
+                                        <!-- TODO replace with track and check with bus stop attr  -->
+                                        <!-- Wenn bus dann adresse anzeigen! -->
+                                        <div class="value">Gleis {{ trainDat.gleis.departurePlatform}}</div>
                                     </div>
                                 </div>
 
@@ -74,7 +75,6 @@
 
 <script>
     import mom from 'moment'
-    import TransData from '../../data/traindata'
     import { EventBus } from '../EventBus';
 
     export default {
@@ -86,8 +86,8 @@
         },
       created () {
         EventBus.$on('transportData', transportData => {
-          this.trainArr = transportData
-
+          this.trainArr = transportData;
+          //transportData.forEach((e, i, arr) => { console.log(e); console.log(e.gleis.departurePlatform); arr[i] = e.gleis.departurePlatform });
           // console.log(`Oh, that's nice. It's gotten: \n ${transportData[0].delay} :)`)
         })
       },
