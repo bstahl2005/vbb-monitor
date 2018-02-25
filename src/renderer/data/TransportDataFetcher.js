@@ -115,11 +115,36 @@ getDepartures(wildau_id, options)
 //EventBus.$emit('transportData', response);
 // }
 
-
+let value = 0;
 // Interval for all the stuff coming later...
 setInterval(() => {
 
-    getDepartures(wildau_id, options);
+    getDepartures(wildau_id, options)
+        .then(
+            (response) => {
 
+                var promises = [];
+
+                response.forEach((e, i, array) => {
+                    if(e.forward != null) {
+                        e.forward.then((result) => {
+                            result.forEach((forward_e, forward_i, forward_array) => {
+                                promises.push(
+                                    getGleis(forward_e.direction, forward_e.station_id, forward_e.when)
+                                        .then((gleise) => {
+                                            result[forward_i].gleis = gleise
+                                        }));
+                            });
+                        });
+                    }
+                    promises.push(getGleis(e.direction, e.station_id, e.when)
+                        .then((gleise) => {response[i].gleis = gleise}));
+                });
+
+
+
+                Promise.all(promises).then(() => EventBus.$emit('transportData', response));
+
+            });
 
 }, interval);

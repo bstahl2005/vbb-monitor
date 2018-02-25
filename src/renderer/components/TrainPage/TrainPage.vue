@@ -161,6 +161,7 @@
     import mom from 'moment'
     import { EventBus } from '../EventBus';
 
+
     export default {
         data () {
             return {
@@ -186,11 +187,16 @@
             })
         })
 
+          EventBus.$on('valueData', data => {
+
+          });
+
         //this.startTime();
 
 
 
       },
+
       methods: {
         getFormattedTime(time) {
             return mom(time).format("HH:mm")
