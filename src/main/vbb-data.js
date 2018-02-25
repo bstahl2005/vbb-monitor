@@ -35,13 +35,15 @@ module.exports = {
      *
      * Datatype:
      *
-     * from: Abfahrtsbahnhof
+     * from_name: Abfahrtsbahnhof
+     * from_id: Abfahrtbahnhof ID
      * to: Zielbahnhof
      * when: exakter abfahrtszeitpunkt
      * diff: exakter zeit bis abfahrt (negativ)
      * diff_text: text als human readable
      * delay: verspaetung
      * forward: promise[] mit gleichem datentyp wenn wildau -> kw, sonst null
+     * gleis: promise für {departurePlatform, arrivalPlatform}
      * @param id
      * @param options
      * @param isForward
@@ -74,7 +76,13 @@ module.exports = {
                         // dirty hotfix, ignore stations that contain the name (S+U Zoologischer Garten und S+U Zoologischer Garten/Jebensstr.)
                         return result[0];
                     }).then((result) => {
-                        return vbb_client.journeys(departure.from_id, result.id, {when: departure.when, results: 1}).then((res) => {return {departurePlatform : res[0].legs[0].departurePlatform, arrivalPlatform : res[0].legs[0].arrivalPlatform}; });
+                        return vbb_client
+                            .journeys(departure.from_id, result.id, {when: departure.when, results: 1})
+                            .then((res) => {return {
+                                departurePlatform : res[0].legs[0].departurePlatform,
+                                arrivalPlatform : res[0].legs[0].arrivalPlatform
+                            }
+                        });
                     });
 
 
