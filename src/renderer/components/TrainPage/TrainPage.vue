@@ -8,14 +8,14 @@
                 </div>
 
                 <div v-for="trainDat in trainArr">
-                    <div class="sbahnbox" v-if="trainDat.line.product !== 'regional'">
+                    <div class="sbahnbox" v-if="trainDat.product !== 'regional'">
 
                         <div class="outerBox">
                             <div class="logo">
-                                <div class="sbahnbox" v-if="trainDat.line.product === 'suburban'">
+                                <div class="sbahnbox" v-if="trainDat.product === 'suburban'">
                                     <img src="../../assets/suburban.svg">
                                 </div>
-                                <div class="sbahnbox" v-else="trainDat.line.product === 'bus'">
+                                <div class="sbahnbox" v-else="trainDat.product === 'bus'">
                                     <img src="../../assets/bus.svg">
                                 </div>
                             </div>
@@ -23,15 +23,15 @@
                             <div class="innerBox card">
                                 <div class="vCenter">
                                     <div class="border">
-                                        <div v-if="trainDat.line.product === 'suburban'">
+                                        <div v-if="trainDat.product === 'suburban'">
                                             <div class="icon ellipsis">
                                                 <span class="sbahnsign">S46</span>
                                             </div>
                                         </div>
 
-                                        <div v-if="trainDat.line.product === 'bus'">
+                                        <div v-if="trainDat.product === 'bus'">
                                             <div class="icon ellipsisbus">
-                                                <span class="bussign ">{{trainDat.line.name.substr(3)}}</span>
+                                                <span class="bussign ">{{trainDat.station_name.substr(3)}}</span>
                                             </div>
                                         </div>
 
@@ -47,33 +47,33 @@
                                             <i class="small material-icons">access_time</i>
                                         </div>
                                         <div id="arrive" class="text">
-                                            <div class="value">{{ getFormattedTime(trainDat.when) }} Uhr
+                                            <div class="value">{{ substractTime(trainDat.when, trainDat.delay) }} Uhr
                                                 <span v-if="trainDat.delay > 0">
-                                                    <span class="delay"> + {{ trainDat.delay }}</span>
+                                                    <span class="delay"> + {{ trainDat.delay/60 }}</span>
                                                 </span>
-                                                <span v-else-if="trainDat.delay === 0"></span>
+                                                <span v-else-if="trainDat.delay === 0 || trainDat.delay == null"></span>
                                                 <span v-else="trainDat.delay < 0">
-                                            <span class="minusDelay"> - {{ trainDat.delay }}</span>
-                                        </span>
+                                                    <span class="minusDelay"> - {{ trainDat.delay }}</span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="border">
                                         <div class="icon">
-                                            <div v-if="trainDat.line.product === 'suburban'">
+                                            <div v-if="trainDat.product === 'suburban'">
                                                 <i class="small material-icons">train</i>
                                             </div>
-                                            <div v-if="trainDat.line.product === 'bus'">
+                                            <div v-if="trainDat.product === 'bus'">
                                                 <i class="small material-icons">directions_bus</i>
                                             </div>
                                         </div>
                                         <div class="text">
                                             <!-- TODO replace with track and check with bus stop attr -->
-                                            <div v-if="trainDat.line.product === 'suburban'">
+                                            <div v-if="trainDat.product === 'suburban'">
                                                 <div class="value">Gleis 4<!--{{ trainDat.journeyId }}--></div>
                                             </div>
-                                            <div v-if="trainDat.line.product === 'bus'">
+                                            <div v-if="trainDat.product === 'bus'">
                                                 <div class="value">Haltestelle Timbucktu<!--{{ trainDat.journeyId }}--></div>
                                             </div>
                                         </div>
@@ -93,7 +93,7 @@
                 </div>
 
                 <div v-for="trainDat in trainArr">
-                    <div v-if="trainDat.line.product === 'regional'">
+                    <div v-if="trainDat.product !== 'suburban'">
                         <div class="logo">
                             <img src="../../assets/bahn.svg">
                         </div>
@@ -102,7 +102,7 @@
                             <div class="vCenter">
                                 <div class="border">
                                     <div class="icon ellipsistrain">
-                                        <span class="trainsign">{{trainDat.line.name}}</span>
+                                        <span class="trainsign">{{trainDat.station_name}}</span>
                                     </div>
                                 </div>
 
@@ -110,6 +110,11 @@
                                 <div class="text">
                                     <div v-if="trainDat.direction.substr(0,1) === 'S'">
                                         <p class="endstation endstationtext">{{ trainDat.direction.substr(2) }}</p>
+                                        <div id="endstation" class="text">
+                                            <div v-if="trainDat.direction.substr(0,1) === 'S'">
+                                                {{ trainDat.station_name }} {{ trainDat.direction.substr(2) }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -118,28 +123,20 @@
                                         <i class="small material-icons">access_time</i>
                                     </div>
                                     <div class="text">
-                                        <div class="value">{{ getFormattedTime(trainDat.when) }} Uhr
-                                            <span v-if="trainDat.delay > 0">
-                                                <span class="delay"> + {{ trainDat.delay }}</span>
+                                        <div class="value">{{ substractTime(trainDat.when, trainDat.delay) }} Uhr
+                                            <span v-if="trainDat.delay">
+                                                <span v-if="trainDat.delay > 0">
+                                                    <span class="delay"> + {{ trainDat.delay }}</span>
+                                                </span>
+                                                <span v-else-if="trainDat.delay === 0"></span>
+                                                <span v-else="trainDat.delay < 0">
+                                                <span class="minusDelay"> - {{ trainDat.delay }}</span>
                                             </span>
-                                            <span v-else-if="trainDat.delay === 0"></span>
-                                            <span v-else="trainDat.delay < 0">
-                                        <span class="minusDelay"> - {{ trainDat.delay }}</span>
                                     </span>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="border">
-                                    <div class="icon">
-                                        <i class="small material-icons">directions_railway</i>
-                                    </div>
-                                    <div id="platform" class="text">
-                                        <!-- TODO replace with track and check with bus stop attr -->
-                                        <div class="value">Gleis 4<!--{{ trainDat.journeyId }}--></div>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -151,19 +148,62 @@
 <script>
     import mom from 'moment'
     import TransData from '../../data/traindata'
+    import { EventBus } from '../EventBus';
+
+    //let kwArr;
+
+    EventBus.$on('transportData', transportData => {
+        transportData.forEach((data) => {
+            console.log(data);
+            if(data.forward !== null){
+                data.forward.then((mutti) => {
+                    console.log(mutti);
+                    //kwArr = mutti;
+                });
+            }
+        })
+    })
+
 
     export default {
         data () {
             return {
                 name: "Fahrplandaten",
-                trainArr: TransData.trainArr
+                trainArr: [],
             }
         },
-        methods: {
-            getFormattedTime(time) {
+        /*
+        getKwData(){
+            EventBus.$on('transportData', transportData => {
+                transportData.forEach((data) => {
+                    console.log(data);
+                    if(data.forward !== null){
+                        data.forward.then((mutti) => {
+                            return mutti;
+                        });
+                    }
+                })
+            })
+        },*/
+      created () {
+        EventBus.$on('transportData', transportData => {
+          this.trainArr = transportData
+
+          // console.log(`Oh, that's nice. It's gotten: \n ${transportData[0].delay} :)`)
+        })
+      },
+      methods: {
+        getFormattedTime(time) {
+            return mom(time).format("HH:mm")
+        },
+          substractTime(time, delay) {
+            if(delay !== null){
+                return mom(time).subtract(delay, 'seconds').format("HH:mm")
+            } else {
                 return mom(time).format("HH:mm")
             }
-        }
+          }
+      }
     }
 </script>
 
