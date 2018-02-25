@@ -89,7 +89,12 @@
             </div>
 
             <!-- clock div -->
-            <div class="clock" id="txt"></div>
+
+            <!--<div class="clock">{{currentTime}}</div>-->
+
+            <div class="clockbox">
+                <span class="clock">{{currentTime.substr(0,5)}}</span><span class="clockSeconds">{{currentTime.substr(5)}}</span>
+            </div>
 
 
             <!-- only train kw -->
@@ -168,6 +173,7 @@
                 name: "Fahrplandaten",
                 trainArr: [],
                 kwDataArr: [],
+                currentTime: this.getCurrentTime()
             }
         },
 
@@ -185,13 +191,12 @@
                     });
                 }
             })
-        })
+        });
 
-          EventBus.$on('valueData', data => {
+      setInterval(() =>{
+          this.currentTime = this.getCurrentTime()
+      },1000);
 
-          });
-
-        //this.startTime();
 
 
 
@@ -208,26 +213,11 @@
                 return mom(time).format("HH:mm")
             }
           },
-          /*
-          startTime() {
-            let today = new Date();
-            let h = today.getHours();
-            let m = today.getMinutes();
-            let s = today.getSeconds();
-            m = this.checkTime(m);
-            s = this.checkTime(s);
 
-            this.time = h + ":" + m + ":" + s;
-            document.getElementById('txt').innerHTML =
-            h + ":" + m + ":" + s;
-            let t = setTimeout(startTime, 500);
-    },
-          checkTime(i) {
-        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-        return i;
-    }*/
-
-      }
+          getCurrentTime() {
+              return mom().format("HH:mm:ss");
+          }
+        }
     }
 </script>
 
@@ -278,12 +268,23 @@
         width: 100vw;
     }
 
+    .clockbox {
+        margin-left: 30px;
+        margin-right: -180px;
+    }
+
     .clock {
         margin-left: 155px;
         margin-right: -155px;
         #border: solid;
         font-size: 108px;
         font-weight: lighter;
+    }
+
+    .clockSeconds {
+        font-size: 80px;
+        font-weight: lighter;
+        margin-left: 155px
     }
 
     main {
