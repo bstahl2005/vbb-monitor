@@ -51,7 +51,9 @@ function getDepartures(id, options, isForward = false) {
 
                     var options_kw = {
                         duration: kw_timeframe,
-                        when: moment().add(wildau_to_kw, "minutes").add(kw_to_re, "minutes")
+                        when: moment().add(wildau_to_kw, "minutes").add(kw_to_re, "minutes"),
+                        results: 50,
+                        maxQueries: 50
                     };
                     departure.forward = getDepartures(kw_id, options_kw, true);
                 }
@@ -88,9 +90,22 @@ getDepartures(wildau_id, options)
             var promises = [];
 
             response.forEach((e, i, array) => {
+                if(e.forward != null) {
+                    e.forward.then((result) => {
+                        result.forEach((forward_e, forward_i, forward_array) => {
+                            promises.push(
+                                getGleis(forward_e.direction, forward_e.station_id, forward_e.when)
+                                    .then((gleise) => {
+                                        result[forward_i].gleis = gleise
+                                    }));
+                        });
+                    });
+                }
                 promises.push(getGleis(e.direction, e.station_id, e.when)
                     .then((gleise) => {response[i].gleis = gleise}));
             });
+
+
 
             Promise.all(promises).then(() => EventBus.$emit('transportData', response));
 
