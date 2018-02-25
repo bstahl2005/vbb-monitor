@@ -61,13 +61,14 @@ module.exports = {
 
 
                     var departure = {};
-                    departure.from_name = body[i].station.name;
-                    departure.from_id = body[i].station.id;
-                    departure.to_name = body[i].direction;
+                    departure.station_name = body[i].station.name;
+                    departure.station_id = body[i].station.id;
+                    departure.direction = body[i].direction;
                     departure.when = body[i].when;
                     departure.diff = moment.duration(moment().diff(moment(body[i].when)));
                     departure.diff_text = moment.duration(moment().diff(moment(body[i].when))).locale("de").humanize();
                     departure.delay = body[i].delay;
+                    departure.product = body[i].product;
                     departure.journeys = body[i].journeyId;
                     departure.forward = null;
 

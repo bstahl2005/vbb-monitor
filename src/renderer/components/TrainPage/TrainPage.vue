@@ -16,7 +16,7 @@
                                     </div>
                                     <div id="endstation" class="text">
                                         <div v-if="trainDat.direction.substr(0,1) === 'S'">
-                                            {{ trainDat.line.name }} {{ trainDat.direction.substr(2) }}
+                                            {{ trainDat.station_name }} {{ trainDat.direction.substr(2) }}
                                         </div>
                                     </div>
                                 </div>
@@ -27,12 +27,14 @@
                                     </div>
                                     <div id="arrive" class="text">
                                         <div class="value">{{ getFormattedTime(trainDat.when) }} Uhr
-                                            <span v-if="trainDat.delay > 0">
-                                                <span class="delay"> + {{ trainDat.delay }}</span>
+                                            <span v-if="trainDat.delay">
+                                                <span v-if="trainDat.delay > 0">
+                                                    <span class="delay"> + {{ trainDat.delay }}</span>
+                                                </span>
+                                                <span v-else-if="trainDat.delay === 0"></span>
+                                                <span v-else="trainDat.delay < 0">
+                                                <span class="minusDelay"> - {{ trainDat.delay }}</span>
                                             </span>
-                                            <span v-else-if="trainDat.delay === 0"></span>
-                                            <span v-else="trainDat.delay < 0">
-                                        <span class="minusDelay"> - {{ trainDat.delay }}</span>
                                     </span>
                                         </div>
                                     </div>
@@ -44,7 +46,7 @@
                                     </div>
                                     <div id="platform" class="text">
                                         <!-- TODO replace with track and check with bus stop attr -->
-                                        <div class="value">Gleis {{ trainDat.journeyId }}</div>
+                                        <div class="value">Gleis {{  }}</div>
                                     </div>
                                 </div>
 
@@ -52,11 +54,11 @@
 
                         </div>
 
-                        <div class="sbahnbox" v-if="trainDat.line.product === 'suburban'"></div>
+                        <div class="sbahnbox" v-if="trainDat.product === 'suburban'"></div>
 
-                        <div class="sbahnbox" v-else-if="trainDat.line.product === 'bus'"></div>
+                        <div class="sbahnbox" v-else-if="trainDat.product === 'bus'"></div>
 
-                        <div class="sbahnbox" v-else="trainDat.line.product === 'regional'">
+                        <div class="sbahnbox" v-else="trainDat.product === 'regional'">
                             <!-- TODO check the attribute -->
                         </div>
                     </div>
@@ -73,19 +75,27 @@
 <script>
     import mom from 'moment'
     import TransData from '../../data/traindata'
+    import { EventBus } from '../EventBus';
 
     export default {
         data () {
             return {
                 name: "Fahrplandaten",
-                trainArr: TransData.trainArr
+                trainArr: [],
             }
         },
-        methods: {
-            getFormattedTime(time) {
-                return mom(time).format("HH:mm")
-            }
+      created () {
+        EventBus.$on('transportData', transportData => {
+          this.trainArr = transportData
+
+          // console.log(`Oh, that's nice. It's gotten: \n ${transportData[0].delay} :)`)
+        })
+      },
+      methods: {
+        getFormattedTime(time) {
+            return mom(time).format("HH:mm")
         }
+      }
     }
 </script>
 
