@@ -121,3 +121,14 @@ typings/
 # next.js build output
 .next
 .idea/inspectionProfiles/
+.electron-vue/build.js
+.electron-vue/dev-runner.js
+.electron-vue/dev-client.js
+.electron-vue/webpack.main.config.js
+.electron-vue/webpack.renderer.config.js
+.electron-vue/webpack.web.config.js
+.idea/misc.xml
+.idea/modules.xml
+.idea/vbb-monitor.iml
+.idea/vcs.xml
+.idea/watcherTasks.xml
