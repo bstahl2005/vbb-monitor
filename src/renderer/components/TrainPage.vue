@@ -1,6 +1,5 @@
 <template>
     <div>
-        <img id="logo" src="~@/assets/logo.png" alt="electron-vue" width="150px">
         <train-infos></train-infos>
     </div>
 </template>

@@ -1,31 +1,123 @@
 <template>
-    <div id="wrapper">
+    <div id="wrapper" class="blue-grey lighten-3 center">
+
         <main>
             <div class="left-side">
+                <div class="headline">
+                    <span class="thin">S-Bahnhof Wildau</span>
+                </div>
+
                 <div v-for="trainDat in trainArr">
-                    <div class="outerBox">
+                    <div class="sbahnbox" v-if="trainDat.line.product !== 'regional'">
+
+                        <div class="outerBox">
+                            <div class="logo">
+                                <div class="sbahnbox" v-if="trainDat.line.product === 'suburban'">
+                                    <img src="../../assets/suburban.svg">
+                                </div>
+                                <div class="sbahnbox" v-else="trainDat.line.product === 'bus'">
+                                    <img src="../../assets/bus.svg">
+                                </div>
+                            </div>
+
+                            <div class="innerBox card">
+                                <div class="vCenter">
+                                    <div class="border">
+                                        <div v-if="trainDat.line.product === 'suburban'">
+                                            <div class="icon ellipsis">
+                                                <span class="sbahnsign">S46</span>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="trainDat.line.product === 'bus'">
+                                            <div class="icon ellipsisbus">
+                                                <span class="bussign ">{{trainDat.line.name.substr(3)}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div id="endstation" class="text ">
+                                            <div v-if="trainDat.direction.substr(0,1) === 'S'">
+                                                <p class="endstation">{{ trainDat.direction.substr(2) }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="border">
+                                        <div class="icon">
+                                            <i class="small material-icons">access_time</i>
+                                        </div>
+                                        <div id="arrive" class="text">
+                                            <div class="value">{{ getFormattedTime(trainDat.when) }} Uhr
+                                                <span v-if="trainDat.delay > 0">
+                                                    <span class="delay"> + {{ trainDat.delay }}</span>
+                                                </span>
+                                                <span v-else-if="trainDat.delay === 0"></span>
+                                                <span v-else="trainDat.delay < 0">
+                                            <span class="minusDelay"> - {{ trainDat.delay }}</span>
+                                        </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="border">
+                                        <div class="icon">
+                                            <div v-if="trainDat.line.product === 'suburban'">
+                                                <i class="small material-icons">train</i>
+                                            </div>
+                                            <div v-if="trainDat.line.product === 'bus'">
+                                                <i class="small material-icons">directions_bus</i>
+                                            </div>
+                                        </div>
+                                        <div class="text">
+                                            <!-- TODO replace with track and check with bus stop attr -->
+                                            <div v-if="trainDat.line.product === 'suburban'">
+                                                <div class="value">Gleis 4<!--{{ trainDat.journeyId }}--></div>
+                                            </div>
+                                            <div v-if="trainDat.line.product === 'bus'">
+                                                <div class="value">Haltestelle Timbucktu<!--{{ trainDat.journeyId }}--></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- only train kw -->
+            <div class="right-site justifyRight">
+                <div class="headline2">
+                    <span class="thin">Bhf. Königs Wusterhausen</span>
+                </div>
+
+                <div v-for="trainDat in trainArr">
+                    <div v-if="trainDat.line.product === 'regional'">
                         <div class="logo">
-                            <img src="../../assets/suburban.svg">
+                            <img src="../../assets/bahn.svg">
                         </div>
 
-                        <div class="innerBox">
+                        <div class="innerBox card">
                             <div class="vCenter">
                                 <div class="border">
-                                    <div class="icon">
-                                        ICON
+                                    <div class="icon ellipsistrain">
+                                        <span class="trainsign">{{trainDat.line.name}}</span>
                                     </div>
-                                    <div id="endstation" class="text">
-                                        <div v-if="trainDat.direction.substr(0,1) === 'S'">
-                                            {{ trainDat.line.name }} {{ trainDat.direction.substr(2) }}
-                                        </div>
+                                </div>
+
+                                <!-- endstation -->
+                                <div class="text">
+                                    <div v-if="trainDat.direction.substr(0,1) === 'S'">
+                                        <p class="endstation endstationtext">{{ trainDat.direction.substr(2) }}</p>
                                     </div>
                                 </div>
 
                                 <div class="border">
                                     <div class="icon">
-                                        ICON
+                                        <i class="small material-icons">access_time</i>
                                     </div>
-                                    <div id="arrive" class="text">
+                                    <div class="text">
                                         <div class="value">{{ getFormattedTime(trainDat.when) }} Uhr
                                             <span v-if="trainDat.delay > 0">
                                                 <span class="delay"> + {{ trainDat.delay }}</span>
@@ -40,31 +132,17 @@
 
                                 <div class="border">
                                     <div class="icon">
-                                        ICON
+                                        <i class="small material-icons">directions_railway</i>
                                     </div>
                                     <div id="platform" class="text">
                                         <!-- TODO replace with track and check with bus stop attr -->
-                                        <div class="value">Gleis {{ trainDat.journeyId }}</div>
+                                        <div class="value">Gleis 4<!--{{ trainDat.journeyId }}--></div>
                                     </div>
                                 </div>
-
                             </div>
-
-                        </div>
-
-                        <div class="sbahnbox" v-if="trainDat.line.product === 'suburban'"></div>
-
-                        <div class="sbahnbox" v-else-if="trainDat.line.product === 'bus'"></div>
-
-                        <div class="sbahnbox" v-else="trainDat.line.product === 'regional'">
-                            <!-- TODO check the attribute -->
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="right-site">
-                Right side
             </div>
         </main>
     </div>
@@ -92,6 +170,7 @@
 <style scoped>
     @import "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css";
     @import "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js";
+    @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 
 
     .delay {
@@ -108,15 +187,22 @@
         padding: 0;
     }
 
-    body { font-family: 'Source Sans Pro', sans-serif; }
+    .headline {
+        font-size: 26px;
+        margin-bottom: 10px;
+    }
+
+    .thin {
+        font-weight: lighter;
+    }
+
+    body {
+        font-family: 'Source Sans Pro', sans-serif;
+        background-color: #737174;
+    }
 
     #wrapper {
-        background:
-                radial-gradient(
-                        ellipse at top left,
-                        rgba(255, 255, 255, 1) 40%,
-                        rgba(229, 229, 229, .9) 100%
-                );
+        background-color: #e0dee1;
         height: 100vh;
         padding: 60px 80px;
         width: 100vw;
@@ -160,38 +246,46 @@
 
     /* s-bahn data format */
     .outerBox {
-        width: 500px;
+        width: 600px;
         height: 200px;
         overflow: hidden;
         display: inline-block;
 
     }
 
+    .headline2 {
+        font-size: 26px;
+        margin-bottom: 10px;
+        margin-left: -450px;
+    }
+
+    .justifyRight {
+        margin-left: 300px;
+    }
+
     .innerBox {
         position: absolute;
-        border: solid;
-        border-radius: 50px;
-        border-width: 2px;
-        width: 400px;
+        border-radius: 3px;
+        width: 500px;
         height: 196px;
         margin-left: 50px;
-        background-color: #666666;
-        -moz-box-shadow:    inset 0 0 20px #9d9d9d;
-        -webkit-box-shadow: inset 0 0 20px #000000;
-        box-shadow:         inset 0 0 20px #9d9d9d;
+        background-color: #f8f6f9;
     }
 
     .text {
+        padding-left: 55px;
         text-align: left;
-        width: 300px;
-        color: whitesmoke;
+        width: 600px;
+        color: #000000;
         font-family: sans-serif;
-        font-size: 18px;
+        font-size: 22px;
+        #border: solid;
     }
 
     .icon {
         float: left;
-        width: 50px;
+        width: 37px;
+        height: 35px;
     }
 
     .logo {
@@ -210,7 +304,75 @@
     }
 
     .vCenter {
-        margin-top: 37px;
+        margin-top: 28px;
     }
+
+    .ellipsis {
+        margin-top: 5px;
+        position: absolute;
+        background-color: #CC8625;
+        width: 38px;
+        height: 22px;
+        border: 2px;
+        border-radius: 150px;
+    }
+
+    .ellipsisbus {
+        margin-top: 5px;
+        position: absolute;
+        background-color: #B60079;
+        width: 38px;
+        height: 22px;
+        border: 2px;
+        border-radius: 150px;
+    }
+
+    .ellipsistrain {
+        margin-top: 5px;
+        position: absolute;
+        background-color: #BE1414;
+        width: 38px;
+        height: 22px;
+        border: 2px;
+        border-radius: 150px;
+    }
+
+    .sbahnsign {
+        padding-top: 3px;
+        padding-left: 2px;
+        color: #FFFFFF;
+        text-align: center;
+        width: 2.5em;
+        height: 1.25em;
+        position: relative;
+        border-radius: 1.25em;
+    }
+
+    .trainsign{
+        color: #FFFFFF;
+        text-align: center;
+        width: 2.5em;
+        height: 1.25em;
+        #background: #BE1414;
+        position: relative;
+    }
+
+    .bussign {
+        color: #FFFFFF;
+        text-align: center;
+        width: 2.5em;
+        height: 1.25em;
+        position: relative;
+    }
+
+    .endstation {
+        font-size: 28px;
+    }
+
+    .endstationtext {
+        margin-left: 70px;
+    }
+
+
 
 </style>
