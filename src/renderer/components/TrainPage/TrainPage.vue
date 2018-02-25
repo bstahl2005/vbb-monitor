@@ -88,7 +88,8 @@
                 </div>
             </div>
 
-            <div></div>
+            <!-- clock div -->
+            <div class="clock" id="txt"></div>
 
 
             <!-- only train kw -->
@@ -165,22 +166,10 @@
             return {
                 name: "Fahrplandaten",
                 trainArr: [],
-                kwDataArr: []
+                kwDataArr: [],
             }
         },
-        /*
-        getKwData(){
-            EventBus.$on('transportData', transportData => {
-                transportData.forEach((data) => {
-                    console.log(data);
-                    if(data.forward !== null){
-                        data.forward.then((mutti) => {
-                            return mutti;
-                        });
-                    }
-                })
-            })
-        },*/
+
       created () {
         EventBus.$on('transportData', transportData => {
           this.trainArr = transportData;
@@ -195,9 +184,12 @@
                     });
                 }
             })
-          //transportData.forEach((e, i, arr) => { console.log(e); console.log(e.gleis.departurePlatform); arr[i] = e.gleis.departurePlatform });
-          // console.log(`Oh, that's nice. It's gotten: \n ${transportData[0].delay} :)`)
         })
+
+        //this.startTime();
+
+
+
       },
       methods: {
         getFormattedTime(time) {
@@ -209,7 +201,26 @@
             } else {
                 return mom(time).format("HH:mm")
             }
-          }
+          },
+          /*
+          startTime() {
+            let today = new Date();
+            let h = today.getHours();
+            let m = today.getMinutes();
+            let s = today.getSeconds();
+            m = this.checkTime(m);
+            s = this.checkTime(s);
+
+            this.time = h + ":" + m + ":" + s;
+            document.getElementById('txt').innerHTML =
+            h + ":" + m + ":" + s;
+            let t = setTimeout(startTime, 500);
+    },
+          checkTime(i) {
+        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+    }*/
+
       }
     }
 </script>
@@ -235,8 +246,14 @@
     }
 
     .headline {
-        font-size: 26px;
+        font-size: 36px;
         margin-bottom: 10px;
+    }
+
+    .headline2 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        margin-left: 40px;
     }
 
     .thin {
@@ -253,6 +270,14 @@
         height: 100vh;
         padding: 60px 80px;
         width: 100vw;
+    }
+
+    .clock {
+        margin-left: 155px;
+        margin-right: -155px;
+        #border: solid;
+        font-size: 108px;
+        font-weight: lighter;
     }
 
     main {
@@ -300,11 +325,7 @@
 
     }
 
-    .headline2 {
-        font-size: 26px;
-        margin-bottom: 10px;
-        margin-left: -20px;
-    }
+
 
     .justifyRight {
         margin-left: 300px;
