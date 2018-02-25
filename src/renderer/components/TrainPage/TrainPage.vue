@@ -25,20 +25,18 @@
                                     <div class="border">
                                         <div v-if="trainDat.product === 'suburban'">
                                             <div class="icon ellipsis">
-                                                <span class="sbahnsign">S46</span>
+                                                <span class="sbahnsign">{{trainDat.line_name}}</span>
                                             </div>
                                         </div>
 
                                         <div v-if="trainDat.product === 'bus'">
                                             <div class="icon ellipsisbus">
-                                                <span class="bussign ">{{trainDat.station_name.substr(3)}}</span>
+                                                <span class="bussign ">{{trainDat.line_name.substr(3)}}</span>
                                             </div>
                                         </div>
 
                                         <div id="endstation" class="text ">
-                                            <div v-if="trainDat.direction.substr(0,1) === 'S'">
-                                                <p class="endstation">{{ trainDat.direction.substr(2) }}</p>
-                                            </div>
+                                                <p class="endstation">{{ trainDat.direction}}</p>
                                         </div>
                                     </div>
 
@@ -74,7 +72,7 @@
                                                 <div class="value">Gleis 4<!--{{ trainDat.journeyId }}--></div>
                                             </div>
                                             <div v-if="trainDat.product === 'bus'">
-                                                <div class="value">Haltestelle Timbucktu<!--{{ trainDat.journeyId }}--></div>
+                                                <div class="value">Haltestelle S-Bahn Wildau<!--{{ trainDat.journeyId }}--></div>
                                             </div>
                                         </div>
                                     </div>
@@ -92,61 +90,56 @@
                     <span class="thin">Bhf. Königs Wusterhausen</span>
                 </div>
 
-                <div v-for="trainDat in trainArr">
-                    <div v-if="trainDat.product !== 'suburban'">
-                        <div class="logo">
-                            <img src="../../assets/bahn.svg">
-                        </div>
+                <div v-if="kwDataArr !== undefined">
+                    <div v-for="trainDat in kwDataArr">
+                        <div class="outerBox">
+                            <div class="logo">
+                                <img src="../../assets/bahn.svg">
+                            </div>
 
-                        <div class="innerBox card">
-                            <div class="vCenter">
-                                <div class="border">
-                                    <div class="icon ellipsistrain">
-                                        <span class="trainsign">{{trainDat.station_name}}</span>
+                            <div class="innerBox card">
+                                <div class="vCenter">
+                                    <div class="border">
+                                        <div class="icon ellipsistrain">
+                                            <span class="trainsign">{{ trainDat.line_name }}</span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- endstation -->
-                                <div class="text">
-                                    <div v-if="trainDat.direction.substr(0,1) === 'S'">
-                                        <p class="endstation endstationtext">{{ trainDat.direction.substr(2) }}</p>
+                                    <!-- endstation -->
+                                    <div class="text">
+                                        <p class="endstation endstationtext">{{ trainDat.direction }}</p>
+                                    </div>
+
+                                    <div class="border">
+                                        <div class="icon">
+                                            <i class="small material-icons">access_time</i>
+                                        </div>
                                         <div class="text">
-                                            <div v-if="trainDat.direction.substr(0,1) === 'S'">
-                                                {{ trainDat.station_name }} {{ trainDat.direction.substr(2) }}
+                                            <div class="value">{{ substractTime(trainDat.when, trainDat.delay) }} Uhr
+                                                <span v-if="trainDat.delay">
+                                                    <span v-if="trainDat.delay > 0">
+                                                        <span class="delay"> + {{ trainDat.delay }}</span>
+                                                    </span>
+                                                    <span v-else-if="trainDat.delay === 0"></span>
+                                                    <span v-else="trainDat.delay < 0">
+                                                    <span class="minusDelay"> - {{ trainDat.delay }}</span>
+                                                </span>
+                                        </span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="border">
-                                    <div class="icon">
-                                        <i class="small material-icons">access_time</i>
-                                    </div>
-                                    <div class="text">
-                                        <div class="value">{{ substractTime(trainDat.when, trainDat.delay) }} Uhr
-                                            <span v-if="trainDat.delay">
-                                                <span v-if="trainDat.delay > 0">
-                                                    <span class="delay"> + {{ trainDat.delay }}</span>
-                                                </span>
-                                                <span v-else-if="trainDat.delay === 0"></span>
-                                                <span v-else="trainDat.delay < 0">
-                                                <span class="minusDelay"> - {{ trainDat.delay }}</span>
-                                            </span>
-                                    </span>
+                                    <div class="border">
+                                        <div class="icon">
+                                            <i class="small material-icons">directions_railway</i>
+                                        </div>
+                                        <div id="platform" class="text">
+                                            <!-- Wenn bus dann adresse anzeigen! -->
+                                            <div class="value">Gleis {{ trainDat.gleis.departurePlatform}}</div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="border">
-                                    <div class="icon">
-                                        <i class="small material-icons">directions_railway</i>
-                                    </div>
-                                    <div id="platform" class="text">
-                                        <!-- Wenn bus dann adresse anzeigen! -->
-                                        <div class="value">Gleis {{ trainDat.gleis.departurePlatform}}</div>
-                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -160,26 +153,12 @@
     import mom from 'moment'
     import { EventBus } from '../EventBus';
 
-    //let kwArr;
-
-    EventBus.$on('transportData', transportData => {
-        transportData.forEach((data) => {
-            console.log(data);
-            if(data.forward !== null){
-                data.forward.then((mutti) => {
-                    console.log(mutti);
-                    //kwArr = mutti;
-                });
-            }
-        })
-    })
-
-
     export default {
         data () {
             return {
                 name: "Fahrplandaten",
                 trainArr: [],
+                kwDataArr: []
             }
         },
         /*
@@ -198,6 +177,17 @@
       created () {
         EventBus.$on('transportData', transportData => {
           this.trainArr = transportData;
+            transportData.forEach((data) => {
+                console.log(data);
+                if(data.forward !== null){
+                    data.forward.then((mutti) => {
+                        //this.kwDataArr.push(mutti);
+                        this.kwDataArr = mutti;
+                        console.log(this.kwDataArr)
+                        return this.kwDataArr;
+                    });
+                }
+            })
           //transportData.forEach((e, i, arr) => { console.log(e); console.log(e.gleis.departurePlatform); arr[i] = e.gleis.departurePlatform });
           // console.log(`Oh, that's nice. It's gotten: \n ${transportData[0].delay} :)`)
         })
@@ -306,7 +296,7 @@
     .headline2 {
         font-size: 26px;
         margin-bottom: 10px;
-        margin-left: -450px;
+        margin-left: -20px;
     }
 
     .justifyRight {
