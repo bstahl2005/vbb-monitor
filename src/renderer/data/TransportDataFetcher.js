@@ -35,6 +35,7 @@ function getDepartures(id, options, isForward = false) {
                 departure.station_id = body[i].station.id;
                 departure.direction = body[i].direction;
                 departure.when = body[i].when;
+                departure.line_name = body[i].line.name;
                 departure.diff = moment.duration(moment().diff(moment(body[i].when)));
                 departure.diff_text = moment.duration(moment().diff(moment(body[i].when))).locale("de").humanize();
                 departure.product = body[i].line.product;
