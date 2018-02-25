@@ -110,7 +110,7 @@
                                 <div class="text">
                                     <div v-if="trainDat.direction.substr(0,1) === 'S'">
                                         <p class="endstation endstationtext">{{ trainDat.direction.substr(2) }}</p>
-                                        <div id="endstation" class="text">
+                                        <div class="text">
                                             <div v-if="trainDat.direction.substr(0,1) === 'S'">
                                                 {{ trainDat.station_name }} {{ trainDat.direction.substr(2) }}
                                             </div>
@@ -136,7 +136,18 @@
                                         </div>
                                     </div>
                                 </div>
-                        </div>
+
+                                <div class="border">
+                                    <div class="icon">
+                                        <i class="small material-icons">directions_railway</i>
+                                    </div>
+                                    <div id="platform" class="text">
+                                        <!-- Wenn bus dann adresse anzeigen! -->
+                                        <div class="value">Gleis {{ trainDat.gleis.departurePlatform}}</div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,7 +158,6 @@
 
 <script>
     import mom from 'moment'
-    import TransData from '../../data/traindata'
     import { EventBus } from '../EventBus';
 
     //let kwArr;
@@ -187,8 +197,8 @@
         },*/
       created () {
         EventBus.$on('transportData', transportData => {
-          this.trainArr = transportData
-
+          this.trainArr = transportData;
+          //transportData.forEach((e, i, arr) => { console.log(e); console.log(e.gleis.departurePlatform); arr[i] = e.gleis.departurePlatform });
           // console.log(`Oh, that's nice. It's gotten: \n ${transportData[0].delay} :)`)
         })
       },
