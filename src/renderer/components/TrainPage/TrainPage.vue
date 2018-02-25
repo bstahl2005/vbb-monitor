@@ -58,6 +58,7 @@
                                                 <span v-else="trainDat.delay < 0">
                                                     <span class="minusDelay"> - {{ trainDat.delay }}</span>
                                                 </span>
+                                                <span>({{ getRelativeTimeLabel(trainDat.when) }})</span>
                                             </div>
                                         </div>
                                     </div>
@@ -123,7 +124,8 @@
                                             <i class="small material-icons">access_time</i>
                                         </div>
                                         <div class="text">
-                                            <div class="value">{{ substractTime(trainDat.when, trainDat.delay) }} Uhr
+                                            <span class="value">{{ substractTime(trainDat.when, trainDat.delay) }} Uhr
+
                                                 <span v-if="trainDat.delay">
                                                     <span v-if="trainDat.delay > 0">
                                                         <span class="delay"> + {{ trainDat.delay }}</span>
@@ -131,8 +133,11 @@
                                                     <span v-else-if="trainDat.delay === 0"></span>
                                                     <span v-else="trainDat.delay < 0">
                                                     <span class="minusDelay"> - {{ trainDat.delay }}</span>
+                                                    </span>
                                                 </span>
-                                        </span>
+
+                                                <span>({{ getRelativeTimeLabel(trainDat.when) }})</span>
+                                            </span>
                                             </div>
                                         </div>
                                     </div>
@@ -152,9 +157,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
-    </div>
+ </div>
 </template>
 
 <script>
@@ -198,12 +202,29 @@
       },
 
       methods: {
-        getFormattedTime(time) {
+        getFormattedAbsoluteTime(time) {
             return mom(time).format("HH:mm")
         },
+        getRelativeTimeLabel(time) {
+          let now = mom().locale('de');
+            let relativeTime = now.to(time);
+            // let label = 'in';
+            // let out = mom.duration(relativeTime).asMinutes();
+
+            console.log(relativeTime);
+
+            return relativeTime;
+        },
           substractTime(time, delay) {
-            if(delay !== null){
+            if(delay){
+
+              if(delay > 0)
+              {
                 return mom(time).subtract(delay, 'seconds').format("HH:mm")
+              }
+              else if (delay < 0) {
+                return mom(time).add(delay, 'seconds').format("HH:mm")
+              }
             } else {
                 return mom(time).format("HH:mm")
             }
