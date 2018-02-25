@@ -36,7 +36,12 @@
                                         </div>
 
                                         <div id="endstation" class="text ">
+                                            <div v-if="trainDat.direction.substr(0,2) === 'S '">
+                                                <p class="endstation">{{ trainDat.direction.substr(2)}}</p>
+                                            </div>
+                                            <div v-else>
                                                 <p class="endstation">{{ trainDat.direction}}</p>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -82,6 +87,8 @@
                     </div>
                 </div>
             </div>
+
+            <div></div>
 
 
             <!-- only train kw -->
@@ -306,7 +313,7 @@
     .innerBox {
         position: absolute;
         border-radius: 3px;
-        width: 500px;
+        width: 550px;
         height: 196px;
         margin-left: 50px;
         background-color: #f8f6f9;
@@ -364,7 +371,7 @@
         width: 38px;
         height: 22px;
         border: 2px;
-        border-radius: 150px;
+        border-radius: 0px;
     }
 
     .ellipsistrain {
@@ -374,7 +381,7 @@
         width: 38px;
         height: 22px;
         border: 2px;
-        border-radius: 150px;
+        border-radius: 2px;
     }
 
     .sbahnsign {
