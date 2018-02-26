@@ -142,7 +142,6 @@ setInterval(() => {
                 });
 
 
-
                 Promise.all(promises).then(() => EventBus.$emit('transportData', response));
 
             });
